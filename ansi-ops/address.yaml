@@ -1,0 +1,5 @@
+stomp_interface: 10.142.0.4
+local_interface: 10.142.0.4
+cassandra_admin: cassandra
+cassandra_pass: cassandra
+use_ssl: 0

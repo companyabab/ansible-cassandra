@@ -1,0 +1,14 @@
+#- name: install datastax-agent
+#  become_user: root
+#  yum:
+#   name: datastax-agent
+#   state: latest
+
+- name: address.yaml
+  copy: src=/home/ansible/ansi-ops/address.yaml dest=/var/lib/datastax-agent/conf/address.yaml owner=ansible group=ansible
+
+- name: Install Opscenter agent
+  yum: pkg=datastax-agent state=present
+
+- name: Opscenter agent startup
+  service: name=datastax-agent state=restarted

@@ -1,0 +1,7 @@
+name: datastax.repo
+  copy: src=/home/ansible/ansi-ops/datastax.rep dest=/etc/yum.repos.d/datastax.repo owner=ansible group=ansible 
+
+name: Add repository
+  yum_repository:
+    name: opscenter
+    shell: yum install opscenter

@@ -1,0 +1,16 @@
+- name: datastax.repo
+  copy: src=/home/ansible/ansi-ops/datastax.repo dest=/etc/yum.repos.d/datastax.repo owner=ansible group=ansible mode=0644
+
+
+#- name: install opscenter
+ # become_user: root
+  #yum:
+   #name: opscenter
+   #state: latest
+
+# this command also works
+- name: Install opscenter
+  yum: name=opscenter state=present
+
+- name: Start OpsCenter service
+  service: name=opscenterd state=started
