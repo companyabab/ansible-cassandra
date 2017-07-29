@@ -1,0 +1,8 @@
+[Ansible_test:children]
+AE_vnodes
+[Ansible_test:vars]
+ring_name=Ansible_test
+application_keyspaces=NONE
+cassandra_version=4.7.2
+[AE_vnodes]
+instance-7
