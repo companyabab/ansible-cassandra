@@ -1,0 +1,13 @@
+--- 
+  - hosts: ansible
+    vars:
+    download_url: http://download.oracle.com/otn-pub/java/jdk/8u5-b13/jdk-8u5-linux-x64.tar.gz
+    download_folder: /opt
+    java_name: "{{download_folder}}/jdk1.8.0_65_ansiblecheck"
+    java_archive: "{{download_folder}}/jdk-8u5-linux-x64.tar.gz"
+
+     
+- name: Download Java
+  command: "wget -q -O {{java_archive}} --no-check-certificate --no-cookies --header 'Cookie: oraclelicense=accept-securebackup-coo$"
+- name: Unpack Archive
+  command: "tar -zxf {{java_archive}} -C {{download_folder}} creates={{java_name}}" 

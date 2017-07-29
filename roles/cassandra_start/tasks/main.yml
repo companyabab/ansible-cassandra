@@ -1,0 +1,42 @@
+- name: start cassandra
+  shell: /opt/cassandra/dse-4.7.2/bin/dse cassandra 
+  become: true
+  become_user: root
+  register: c_start
+  until: c_start|success
+  retries: 240
+  delay: 1
+
+- name: poll host for status of the ring
+  shell: /opt/cassandra/dse-4.7.2/bin/nodetool status
+  become: true
+  become_user: root
+  register: c_join
+  until: c_join.rc == 0
+  retries: 240
+  delay: 1
+  always_run: yes
+
+- name: display host is part of the ring
+  shell: /opt/cassandra/dse-4.7.2/bin/nodetool status | grep $(hostname -i {{ inventory_hostname }}) | egrep 'UN|UL'
+  become: true
+  become_user: root
+  register: c_status
+  until: c_status.rc == 0
+  retries: 240
+  delay: 1
+  always_run: yes
+
+- name: small delay for cassandra to get schema version from other nodes
+  pause: seconds=10
+  always_run: yes
+
+- name: verify there is only one version of the schema
+  shell: /opt/cassandra/dse-4.7.2/bin/nodetool describecluster | grep ":[  ]\[" | cut -d":" -f1 | sed 's#[  \t]##g' | wc -l
+  become: true
+  become_user: root
+  register: schema_status
+  retries: 2
+  until: schema_status.stdout == "1"
+  delay: 1
+  always_run: yes

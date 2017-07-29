@@ -1,0 +1,46 @@
+#- include: dependencies.yml
+
+- name: create direcory staging and cassandra
+  file: path=/opt/cassandra state=directory
+  become_user: root
+
+- stat: path=/opt/cassandra
+  register: cassandra_path
+
+- name: download cassandra
+  copy: src=/home/ansible/dse-{{ cassandra_version }}.tar.gz dest=/opt/cassandra/ owner=ansible group=ansible
+
+- name: create data direcory
+  file: path=/opt/cassandra/data state=directory owner=ansible group=ansible
+  become: true
+  become_user: root
+
+- name: create commit_log direcory
+  file: path=/opt/cassandra/commit_logs state=directory owner=ansible group=ansible 
+  become: true
+  become_user: root  
+
+- name: create saved_cache direcory
+  file: path=/opt/cassandra/saved_caches state=directory owner=ansible group=ansible 
+  become: true
+  become_user: root
+
+#- name: delete data directory
+ # file: path=/opt/cassandra/data state=absent 
+  #become: true
+  #become_user: root  
+
+- name: untar cassandra
+  unarchive: src=/opt/cassandra/dse-{{ cassandra_version }}.tar.gz dest=/opt/cassandra/ copy=no
+ # when: dse.4.7.2.stat.exists == True
+
+- stat: path=/opt/cassandra/dse-{{ cassandra_version }}
+  register: untar_path
+
+- name: create symlink
+  file: src=/opt/dse-{{ cassandra_version }} dest=/opt/cassandra state=link
+  failed_when: untar_path.stat.exists == False
+
+- name: bootstrap
+  copy: src=/home/ansible/cassandra.yaml dest=/opt/cassandra/dse-{{ cassandra_version }}/resources/cassandra/conf owner=ansible group=ansible
+
